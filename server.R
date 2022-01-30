@@ -1,6 +1,37 @@
-
+library(ggplot2)
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  almacen <- reactiveValues()
+  
+  output$hist <- renderPlot({
+    input$add
+    
+    distribucion <- isolate(input$dist)
+    par(mfrow=c(3,1))
+    
+    if (distribucion == "normal"){
+      
+      mean <- isolate(input$mean)
+      nombre <- isolate(input$name)
+      sd <- isolate(input$sd)
+      req(mean, sd)
+      
+      
+      almacen[[nombre]] <- rnorm(100000, mean, sd)
+
+    }
+    
+    for (j in isolate(names(almacen))) {
+      hist(almacen[[j]],
+           col="orange",
+           main=paste("Distribución", j),
+           freq=FALSE)
+    }
+    
+    })
+  
+  
   
   output$params <- renderUI({
     
