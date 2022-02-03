@@ -1,4 +1,5 @@
 library(ggplot2)
+library(randomcoloR)
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
@@ -21,12 +22,13 @@ server <- function(input, output) {
       almacen[[nombre]] <- rnorm(100000, mean, sd)
 
     }
-    
+    #FIXME
     for (j in isolate(names(almacen))) {
       hist(almacen[[j]],
-           col="orange",
+           col=randomColor(),
            main=paste("Distribución", j),
-           freq=FALSE)
+           freq=FALSE,
+           xlab = NA)
     }
     
     })
