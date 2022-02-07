@@ -1,9 +1,11 @@
 library(shiny)
-library(truncnorm)
+
 
 ui <- fluidPage(
-
-    titlePanel("Probabilistic Excel"),
+  titlePanel("Probabilistic Excel"),
+  tabsetPanel(
+  
+    tabPanel("Añadir Distribución",
 
     sidebarLayout(
         sidebarPanel(
@@ -30,5 +32,7 @@ ui <- fluidPage(
         mainPanel(
            plotOutput("hist")
         )
+    )),
+    tabPanel("Calcular")
     )
 )

@@ -1,5 +1,8 @@
 library(ggplot2)
 library(randomcoloR)
+library(tidyverse)
+library(truncnorm)
+
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
