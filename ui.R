@@ -5,14 +5,14 @@ ui <- fluidPage(
   titlePanel("Probabilistic Excel"),
   tabsetPanel(
   
-    tabPanel("Añadir Distribución",
+    tabPanel("Add new variable",
 
     sidebarLayout(
         sidebarPanel(
-            textInput("name", "Name:"),
+            textInput("name", "Name:",value = "Ejemplo (Normal (0,1))"),
             
             selectInput("dist",
-                        "Distribución:",
+                        "Probability Distribution",
                         choices = list(
                             "Normal" = "normal",
                             "Truncated Normal" = "truncated_normal",
@@ -24,15 +24,58 @@ ui <- fluidPage(
             
             uiOutput("params"),
             
-            actionButton("add", label = "Añadir la distribución")
+            actionButton("add", label = "Add")
             
         ),
 
         # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("hist")
+        mainPanel(style = "overflow-y:scroll; max-height: 2000px; position:relative;",
+                  uiOutput("plots")
         )
     )),
-    tabPanel("Calcular")
+    tabPanel("Calculator",
+    verticalLayout(
+      wellPanel(
+        textInput("name", "Enter an Expresion"),
+        p(
+          "Use the '$' symbol to denote variables created previously, e.g. $Var1 + $Var2 ",
+        ),
+        actionButton("add", label = "Calculate")),
+        plotOutput("finalplot")
     )
+  ))
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
