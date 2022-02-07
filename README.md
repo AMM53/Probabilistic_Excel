@@ -1,4 +1,4 @@
-#Probabilistic Excel (Avanzado)
+# Probabilistic Excel (Avanzado)
 
 Inspirado en Caladis. Se trata de un “excel” u hoja de cálculos probabilística. De manera que se le permite al usuario
 hacer cálculos inciertos sobre distribuciones. p.e:
