@@ -13,7 +13,7 @@ ui <- fluidPage(
              
              sidebarLayout(
                sidebarPanel(
-                 textInput("name", "Name:",value = "Ejemplo (Normal (0,1))"),
+                 textInput("name", "Name:",value = "Normal"),
                  
                  selectInput("dist",
                              "Probability Distribution",
@@ -41,12 +41,14 @@ ui <- fluidPage(
     tabPanel("Calculator",
              verticalLayout(
                wellPanel(
-                 textInput("name", "Enter an Expresion"),
+                 textInput("calc", "Enter a name"),
+                 textInput("expr", "Enter an Expresion",
+                           value="#Normal + 5"),
                  p(
-                   "Use the '$' symbol to denote variables created previously, e.g. $Var1 + $Var2 ",
+                   "Use the '#' symbol to denote variables created previously, e.g. #Var1 + #Var2 ",
                  ),
-                 actionButton("add", label = "Calculate")),
-               plotOutput("finalplot")
+                 actionButton("addexpr", label = "Calculate")),
+               uiOutput("calcplots")
              )
     ),
     
@@ -68,8 +70,7 @@ server <- function(input, output) {
   })
   
   almacen <- reactiveValues()
-  
-  
+  almacen_calc <- reactiveValues()
   
   
   output$params <- renderUI({
@@ -121,9 +122,6 @@ server <- function(input, output) {
         numericInput("ncp",
                      label = "Parámetro de centralidad",
                      value = 1))
-        #ESTE PARAMETRO QUE ES?numericInput("param3",
-                     #label = "rellenar2",
-                     #value = 1))
     
     else if (input$dist == "truncated_normal")
       tagList(
@@ -168,6 +166,21 @@ server <- function(input, output) {
     do.call(tagList, summary_output_list)
   })
   
+
+  output$calcplots <- renderUI({
+    
+    calcplot_output_list <- lapply(0:(input$addexpr), function(i) {
+      calcplotname <- paste("calcplot", i, sep="")
+      plotOutput(calcplotname, height = 500, width = 1000)
+      
+    })
+    
+    do.call(tagList, calcplot_output_list)
+  })
+  
+  
+  
+  
   max_plots <- 100
   
   for (i in 0:max_plots) {
@@ -176,6 +189,7 @@ server <- function(input, output) {
       my_i <- i
       plotname <- paste("plot", my_i, sep="")
       summaryname <- paste("summary", my_i, sep="")
+      calcname <- paste("calcplot", my_i, sep="")
       
       
       output[[plotname]] <- renderPlot({
@@ -257,6 +271,21 @@ server <- function(input, output) {
         
       })
       
+      output[[calcname]] <- renderPlot({
+        
+        
+        nombre_calculo <- if_else(isolate(input$calc)=="", isolate(input$expr), isolate(input$calc))
+        
+        expresion <- isolate(input$expr)
+        expresion <- str_replace_all(expresion, "#", "almacen$")
+        
+        almacen_calc[[nombre_calculo]] <- isolate(eval(parse(text=expresion)))
+        
+        isolate(print(tibble(value = almacen_calc[[nombre_calculo]]) %>% 
+                ggplot(aes(value))+ geom_histogram(fill=randomColor())+
+                ggtitle(paste('Distribución', nombre_calculo))))
+        
+      })
 
       
       
