@@ -14,4 +14,4 @@ Se utiliza método monte carlo (simulaciones) para calcular los valores de la di
 Añadir Tareas pendientes
 
 ## Referencia Shiny 
-[Mastering Shiny](http://https://mastering-shiny.org/index.html)
+[Mastering Shiny](https://mastering-shiny.org/index.html)
