@@ -13,7 +13,7 @@ ui <- fluidPage(
              
              sidebarLayout(
                sidebarPanel(
-                 textInput("name", "Name:",value = "Normal"),
+                 textInput("name", "Name:",value = "Example_Normal"),
                  
                  selectInput("dist",
                              "Probability Distribution",
@@ -41,9 +41,10 @@ ui <- fluidPage(
     tabPanel("Calculator",
              verticalLayout(
                wellPanel(
-                 textInput("calc", "Enter a name"),
+                 textInput("calc", "Enter a name",
+                           value="Example"),
                  textInput("expr", "Enter an Expresion",
-                           value="#Normal + 5"),
+                           value="#Example_Normal + 5"),
                  p(
                    "Use the '#' symbol to denote variables created previously, e.g. #Var1 + #Var2 ",
                  ),
@@ -157,7 +158,7 @@ server <- function(input, output) {
   
   output$summary <- renderUI({
     
-    summary_output_list <- lapply(0:(input$add), function(i) {
+    summary_output_list <- lapply(0:(input$addexpr), function(i) {
       summaryname <- paste("summary", i, sep="")
       verbatimTextOutput(summaryname)
       
@@ -260,14 +261,15 @@ server <- function(input, output) {
         
         print(tibble(value = almacen[[nombre]]) %>% 
                 ggplot(aes(value))+ geom_histogram(fill=randomColor())+
-                ggtitle(paste('Distribución',nombre, "#", my_i)))
+                ggtitle(paste('Distribución',nombre)))
         
       })
       
       output[[summaryname]] <- renderPrint({
 
-        print(paste("Distribution", isolate(input$name)))
-        summary(almacen[[isolate(input$name)]])
+        
+        print(paste("Distribution", isolate(input$calc)))
+        summary(almacen_calc[[isolate(input$calc)]])
         
       })
       
