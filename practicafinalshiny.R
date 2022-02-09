@@ -48,16 +48,35 @@ ui <- fluidPage(
                  p(
                    "Use the '#' symbol to denote variables created previously, e.g. #Var1 + #Var2 ",
                  ),
-                 actionButton("addexpr", label = "Calculate")),
+                 actionButton("addexpr", label = "Calculate"))
+             ),
+             splitLayout(
                uiOutput("calcplots")
              )
     ),
     
     tabPanel("Summaries",
              mainPanel(style = "overflow-y:scroll; max-height: 2000px; position:relative;",
-                       uiOutput("summary")))
+                       splitLayout(uiOutput("summarycalc"),
+                                   uiOutput("summaryvar"))
+                       )),
     
-    )
+    tabPanel("Probabilities",
+             sidebarPanel(
+               uiOutput("choices"),
+               selectInput("threshold",
+                           "Find probability:",
+                           choices = list("Lower" = "lower",
+                                          "Higher" = "higher")),
+               uiOutput("prob_params")
+               ),
+             mainPanel(
+               plotOutput("dist"),
+               textOutput("prob")
+               )
+             ),
+    
+  )
 )
 
 
@@ -73,6 +92,51 @@ server <- function(input, output) {
   almacen <- reactiveValues()
   almacen_calc <- reactiveValues()
   
+  output$choices <- renderUI({
+    
+    selectInput("choice",
+                "Select distribution:",
+                choices= isolate(names(almacen_calc)))
+    
+  })
+  
+  
+  output$prob_params <- renderUI({
+    
+    if (input$threshold == "lower" | input$threshold =="higher")
+      
+      choice <- input$choice
+
+          sliderInput("tail",
+                  label = "Threshold",
+                  min = round(min(almacen_calc[[choice]]), 2),
+                  max = round(max(almacen_calc[[choice]]), 2),
+                  value = round(median(almacen_calc[[choice]]), 2))
+          
+  })
+  
+  output$prob <- renderText({
+    
+    choice <- input$choice
+    almacen_filtered <- almacen_calc[[choice]]
+    
+    
+    probability <- length(almacen_filtered[almacen_filtered>input$tail])/1000
+    
+    if (input$threshold=="higher") {
+      
+      print(paste("Probability of", input$choice,
+                  "being higher than", input$tail, "is", probability, "%"))
+      
+    } else if (input$threshold=="lower") {
+      
+      print(paste("Probability of", input$choice,
+                  "being lower than", input$tail, "is", 100-probability, "%"))
+      
+    }
+
+    
+  })
   
   output$params <- renderUI({
     
@@ -128,9 +192,11 @@ server <- function(input, output) {
       tagList(
         numericInput("minval",
                      label = "Valor mínimo",
+                     # A mejorar
                      value = -Inf),
         numericInput("maxval",
                      label = "Valor máximo",
+                     # A mejorar
                      value = Inf),
         numericInput("mean",
                      label = "Media",
@@ -156,18 +222,29 @@ server <- function(input, output) {
     do.call(tagList, plot_output_list)
   })
   
-  output$summary <- renderUI({
+  output$summarycalc <- renderUI({
     
     summary_output_list <- lapply(0:(input$addexpr), function(i) {
-      summaryname <- paste("summary", i, sep="")
-      verbatimTextOutput(summaryname)
+      summarycalcname <- paste("summarycalc", i, sep="")
+      verbatimTextOutput(summarycalcname)
       
     })
     
     do.call(tagList, summary_output_list)
   })
   
-
+  output$summaryvar <- renderUI({
+    
+    summaryvar_output_list <- lapply(0:(input$add), function(i) {
+      summaryvarname <- paste("summaryvar", i, sep="")
+      verbatimTextOutput(summaryvarname)
+      
+    })
+    
+    do.call(tagList, summaryvar_output_list)
+  })
+  
+  
   output$calcplots <- renderUI({
     
     calcplot_output_list <- lapply(0:(input$addexpr), function(i) {
@@ -179,6 +256,16 @@ server <- function(input, output) {
     do.call(tagList, calcplot_output_list)
   })
   
+  output$dist <- renderPlot({
+    
+    chosen <- input$choice
+    isolate(print(tibble(value = almacen_calc[[chosen]]) %>% 
+                    ggplot(aes(value))+ geom_histogram(fill=randomColor(), color="black")+
+                    ggtitle(paste('Distribución'))))
+    
+  })
+  
+  
   
   
   
@@ -189,7 +276,8 @@ server <- function(input, output) {
     local({
       my_i <- i
       plotname <- paste("plot", my_i, sep="")
-      summaryname <- paste("summary", my_i, sep="")
+      summaryvarname <- paste("summaryvar", my_i, sep="")
+      summarycalcname <- paste("summarycalc", my_i, sep="")
       calcname <- paste("calcplot", my_i, sep="")
       
       
@@ -255,7 +343,7 @@ server <- function(input, output) {
           
           almacen[[nombre]] <- rchisq(100000, degrees, ncp)
           
-        
+          
           
         }
         
@@ -265,16 +353,24 @@ server <- function(input, output) {
         
       })
       
-      output[[summaryname]] <- renderPrint({
-
+      output[[summarycalcname]] <- renderPrint({
+        
         
         print(paste("Distribution", isolate(input$calc)))
         summary(almacen_calc[[isolate(input$calc)]])
         
       })
       
-      output[[calcname]] <- renderPlot({
+      output[[summaryvarname]] <- renderPrint({
         
+        
+        print(paste("Distribution", isolate(input$name)))
+        summary(almacen[[isolate(input$name)]])
+        
+      })
+      
+      
+      output[[calcname]] <- renderPlot({
         
         nombre_calculo <- if_else(isolate(input$calc)=="", isolate(input$expr), isolate(input$calc))
         
@@ -284,11 +380,11 @@ server <- function(input, output) {
         almacen_calc[[nombre_calculo]] <- isolate(eval(parse(text=expresion)))
         
         isolate(print(tibble(value = almacen_calc[[nombre_calculo]]) %>% 
-                ggplot(aes(value))+ geom_histogram(fill=randomColor())+
-                ggtitle(paste('Distribución', nombre_calculo))))
+                        ggplot(aes(value))+ geom_histogram(fill=randomColor())+
+                        ggtitle(paste('Distribución', nombre_calculo))))
         
       })
-
+      
       
       
     })
