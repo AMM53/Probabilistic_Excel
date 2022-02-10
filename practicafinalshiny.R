@@ -107,7 +107,11 @@ server <- function(input, output) {
     
     selectInput("choice",
                 "Select distribution:",
+<<<<<<< HEAD
                 choices= (names(almacen_calc)))
+=======
+                choices= names(almacen_calc))
+>>>>>>> 5eb1b97095630b83d8a5e2b25f3bc514fb8e0a38
     
   })
   
@@ -155,28 +159,28 @@ server <- function(input, output) {
       # TagList crea un hermano dentro de un renderUI
       tagList(
         numericInput("mean",
-                     label = "Media",
+                     label = "Mean",
                      value = 0),
         numericInput("sd",
-                     label = "Desviación típica",
+                     label = "Standard Deviation",
                      value = 1))
     
     else if (input$dist == "log_normal")
       tagList(
         numericInput("mean",
-                     label = "Media (log)",
+                     label = "Mean (log)",
                      value = 0),
         numericInput("max",
-                     label = "Desviación típica (log)",
+                     label = "Standard Deviation (log)",
                      value = 1))
     
     else if (input$dist == "binomial")
       tagList(
         numericInput("size",
-                     label = "Intentos",
+                     label = "Number of trials",
                      value = 10),
         numericInput("prob",
-                     label = "Probabilidad del suceso",
+                     label = "Probability of success",
                      min = 0,
                      max = 1,
                      value = 0.5))
@@ -184,36 +188,36 @@ server <- function(input, output) {
     else if (input$dist == "gamma")
       tagList(
         numericInput("shape",
-                     label = "Shape / Forma",
+                     label = "Shape",
                      value = 1),
         numericInput("rate",
-                     label = "Scale / Escala",
+                     label = "Scale",
                      value = 1))
     
     else if (input$dist == "chisq")
       tagList(
         numericInput("degrees",
-                     label = "Grados de libertad",
+                     label = "Degress of freedom",
                      value = 1),
         numericInput("ncp",
-                     label = "Parámetro de centralidad",
+                     label = "Non-centrality Parameter ",
                      value = 1))
     
     else if (input$dist == "truncated_normal")
       tagList(
         numericInput("minval",
-                     label = "Valor mínimo",
+                     label = "Lower Bounds",
                      # A mejorar
                      value = -Inf),
         numericInput("maxval",
-                     label = "Valor máximo",
+                     label = "Upper Bounds",
                      # A mejorar
                      value = Inf),
         numericInput("mean",
-                     label = "Media",
+                     label = "Mean",
                      value = 0),
         numericInput("sd",
-                     label = "Desviación típica",
+                     label = "Standard Deviation",
                      value = 1))
     
     
@@ -271,9 +275,16 @@ server <- function(input, output) {
     
     chosen <- input$choice
     isolate(print(tibble(value = almacen_calc[[chosen]]) %>% 
+<<<<<<< HEAD
                     ggplot(aes(value))+ geom_histogram(fill=randomColor(), color="black")+
                     theme_economist() + scale_colour_economist() +
                     ggtitle(paste('Distribución'))))
+=======
+                    ggplot(aes(value, y = (..count..)/sum(..count..)))+ 
+                    geom_histogram(fill=randomColor(), color='black')+
+                    labs(y='Frequency')+
+                    ggtitle(paste('Distribution'))))
+>>>>>>> 5eb1b97095630b83d8a5e2b25f3bc514fb8e0a38
     
   })
   
@@ -360,8 +371,10 @@ server <- function(input, output) {
         }
         
         print(tibble(value = almacen[[nombre]]) %>% 
-                ggplot(aes(value))+ geom_histogram(fill=randomColor())+
-                ggtitle(paste('Distribución',nombre)))
+                ggplot(aes(value, y = (..count..)/sum(..count..)))+ 
+                geom_histogram(fill=randomColor(), color='black')+
+                labs(y='Frequency')+
+                ggtitle(paste('Distribution',nombre)))
         
       })
       
@@ -392,8 +405,10 @@ server <- function(input, output) {
         almacen_calc[[nombre_calculo]] <- isolate(eval(parse(text=expresion)))
         
         isolate(print(tibble(value = almacen_calc[[nombre_calculo]]) %>% 
-                        ggplot(aes(value))+ geom_histogram(fill=randomColor())+
-                        ggtitle(paste('Distribución', nombre_calculo))))
+                        ggplot(aes(value, y = (..count..)/sum(..count..)))+ 
+                        geom_histogram(fill=randomColor(), color='black')+
+                        labs(y='Frequency')+
+                        ggtitle(paste('Distribution', nombre_calculo))))
         
       })
       
