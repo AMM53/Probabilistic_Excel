@@ -4,15 +4,26 @@ library(tidyverse)
 library(truncnorm)
 library(dplyr)
 library(shiny)
+library(shinythemes)
+library(ggthemes)
+
+css <- HTML(" body {
+    background-color: #d5e4eb;
+}
+    #sidebar {
+            background-color: #76a5c2;
+        }
+")
 
 ui <- fluidPage(
+  tags$head(tags$style(css)),
+  theme = shinythemes::shinytheme("cerulean"),
   titlePanel("Probabilistic Excel"),
   tabsetPanel(
-    
     tabPanel("Add new variable",
              
              sidebarLayout(
-               sidebarPanel(
+               sidebarPanel(id="sidebar",
                  textInput("name", "Name:",value = "Example_Normal"),
                  
                  selectInput("dist",
@@ -40,7 +51,7 @@ ui <- fluidPage(
     
     tabPanel("Calculator",
              verticalLayout(
-               wellPanel(
+               wellPanel(id="sidebar",
                  textInput("calc", "Enter a name",
                            value="Example"),
                  textInput("expr", "Enter an Expresion",
@@ -62,7 +73,7 @@ ui <- fluidPage(
                        )),
     
     tabPanel("Probabilities",
-             sidebarPanel(
+             sidebarPanel(id="sidebar",
                uiOutput("choices"),
                selectInput("threshold",
                            "Find probability:",
@@ -96,7 +107,7 @@ server <- function(input, output) {
     
     selectInput("choice",
                 "Select distribution:",
-                choices= isolate(names(almacen_calc)))
+                choices= (names(almacen_calc)))
     
   })
   
@@ -261,6 +272,7 @@ server <- function(input, output) {
     chosen <- input$choice
     isolate(print(tibble(value = almacen_calc[[chosen]]) %>% 
                     ggplot(aes(value))+ geom_histogram(fill=randomColor(), color="black")+
+                    theme_economist() + scale_colour_economist() +
                     ggtitle(paste('Distribución'))))
     
   })
