@@ -12,7 +12,13 @@ css <- HTML(" body {
 }
     #sidebar {
             background-color: #76a5c2;
-        }
+    }
+        
+    body, label, input, button, select { 
+          font-family: 'Arial';
+          color: #000000
+    }
+
 ")
 
 ui <- fluidPage(
@@ -20,12 +26,12 @@ ui <- fluidPage(
   theme = shinythemes::shinytheme("cerulean"),
   titlePanel("Probabilistic Excel"),
   tabsetPanel(
+    tabPanel("About this project"),
     tabPanel("Add new variable",
              
              sidebarLayout(
                sidebarPanel(id="sidebar",
                  textInput("name", "Name:",value = "Example_Normal"),
-                 
                  selectInput("dist",
                              "Probability Distribution",
                              choices = list(
@@ -61,7 +67,7 @@ ui <- fluidPage(
                  ),
                  actionButton("addexpr", label = "Calculate"))
              ),
-             splitLayout(
+             mainPanel(
                uiOutput("calcplots")
              )
     ),
@@ -107,12 +113,8 @@ server <- function(input, output) {
     
     selectInput("choice",
                 "Select distribution:",
-<<<<<<< HEAD
-                choices= (names(almacen_calc)))
-=======
                 choices= names(almacen_calc))
->>>>>>> 5eb1b97095630b83d8a5e2b25f3bc514fb8e0a38
-    
+
   })
   
   
@@ -275,17 +277,13 @@ server <- function(input, output) {
     
     chosen <- input$choice
     isolate(print(tibble(value = almacen_calc[[chosen]]) %>% 
-<<<<<<< HEAD
-                    ggplot(aes(value))+ geom_histogram(fill=randomColor(), color="black")+
-                    theme_economist() + scale_colour_economist() +
-                    ggtitle(paste('Distribución'))))
-=======
+
                     ggplot(aes(value, y = (..count..)/sum(..count..)))+ 
                     geom_histogram(fill=randomColor(), color='black')+
                     labs(y='Frequency')+
+                    theme_economist() + scale_colour_economist() +
                     ggtitle(paste('Distribution'))))
->>>>>>> 5eb1b97095630b83d8a5e2b25f3bc514fb8e0a38
-    
+
   })
   
   
@@ -374,6 +372,7 @@ server <- function(input, output) {
                 ggplot(aes(value, y = (..count..)/sum(..count..)))+ 
                 geom_histogram(fill=randomColor(), color='black')+
                 labs(y='Frequency')+
+                theme_economist() + scale_colour_economist() +
                 ggtitle(paste('Distribution',nombre)))
         
       })
@@ -407,6 +406,7 @@ server <- function(input, output) {
         isolate(print(tibble(value = almacen_calc[[nombre_calculo]]) %>% 
                         ggplot(aes(value, y = (..count..)/sum(..count..)))+ 
                         geom_histogram(fill=randomColor(), color='black')+
+                        theme_economist() + scale_colour_economist() +
                         labs(y='Frequency')+
                         ggtitle(paste('Distribution', nombre_calculo))))
         
