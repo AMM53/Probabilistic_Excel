@@ -96,7 +96,7 @@ server <- function(input, output) {
     
     selectInput("choice",
                 "Select distribution:",
-                choices= isolate(names(almacen_calc)))
+                choices= names(almacen_calc))
     
   })
   
