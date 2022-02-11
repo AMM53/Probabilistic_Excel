@@ -18,13 +18,21 @@ css <- HTML(" body {
           font-family: 'Arial';
           color: #000000
     }
+    
+    .tabbable > .nav > li > a                  {background-color: #76a5c2;  color:black}
+    
+    .tabbable > .nav > li[class=active] > a {
+           background-color: #538aa3;
+           font-family:'Arial';
+           color: #000000}
+    
 
 ")
 
 ui <- fluidPage(
   tags$head(tags$style(css)),
   theme = shinythemes::shinytheme("cerulean"),
-  titlePanel("Probabilistic Excel"),
+  titlePanel(title=div(img(src="Captura.png"))),
   tabsetPanel(
     tabPanel("About this project"),
     tabPanel("Add new variable",
