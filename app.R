@@ -29,7 +29,7 @@ css <- HTML(" body {
 ui <- fluidPage(
   tags$head(tags$style(css)),
   theme = shinythemes::shinytheme("cerulean"),
-  titlePanel(title=div(img(src="Captura.png"))),
+  titlePanel(title=div(img(src="www/Captura.png"))),
   tabsetPanel(
     tabPanel(icon("home"),
              fluidRow(
@@ -48,8 +48,12 @@ ui <- fluidPage(
                         p(strong("2."),'Go back to the "Add new variable" tab, now you can add any distribution that you wish.',
                           strong("Be careful: change the name each time or the app will crash!"),
                           style="text-align:justify;color:black;background-color:#76a5c2;padding:15px;border-radius:10px"),
-                        p(strong("3."),'Go to the "Calculator" tab and perform any calculations with your newly created distributions.',strong("Be careful: Change the name or leave it empty."),style="text-align:justify;color:black;background-color:#76a5c2;padding:15px;border-radius:10px"),
-                        p(strong("4."),'Congrats! you have made your first calculation now you can go to the "Summaries" and "Probabilities" tabs to find out more about your newly created distributions and calculations.',style="text-align:justify;color:black;background-color:#76a5c2;padding:15px;border-radius:10px"),
+                        p(strong("3."),'Go to the "Calculator" tab and perform any calculations with your newly created distributions.',
+                          strong("Be careful: Change the name or leave it empty."),
+                          style="text-align:justify;color:black;background-color:#76a5c2;padding:15px;border-radius:10px"),
+                        p(strong("4."),'Congratulations, you have made your first calculation! Now you can go to the "Summaries" and "Probabilities" 
+                          tabs to find out more about your newly created distributions and calculations.',
+                          style="text-align:justify;color:black;background-color:#76a5c2;padding:15px;border-radius:10px"),
                         
                         width=8)
                       )
