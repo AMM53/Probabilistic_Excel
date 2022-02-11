@@ -1,4 +1,19 @@
-# Probabilistic Excel (Avanzado)
+# Probabilistic Spreadsheet
+[![Image from Gyazo](https://i.gyazo.com/830c7c7f6ac5cc6d627437d7f2be342f.png)](https://gyazo.com/830c7c7f6ac5cc6d627437d7f2be342f)
+
+
+
+## Shiny interface
+Follow this link for the interactive Shiny app. 
+[![Image from Gyazo](https://i.gyazo.com/830c7c7f6ac5cc6d627437d7f2be342f.png)](https://gyazo.com/830c7c7f6ac5cc6d627437d7f2be342f)
+
+## About The Project
+This application is a calculator of probability dis
+
+
+
+
+## Inspiration
 
 Inspirado en Caladis. Se trata de un “excel” u hoja de cálculos probabilística. De manera que se le permite al usuario
 hacer cálculos inciertos sobre distribuciones. p.e:  
@@ -10,8 +25,10 @@ Se utiliza método monte carlo (simulaciones) para calcular los valores de la di
 
 
 
-# To Do
-Añadir Tareas pendientes
+
+## Authors
+
+## Contact
 
 ## Referencia Shiny 
 [Mastering Shiny](https://mastering-shiny.org/index.html)

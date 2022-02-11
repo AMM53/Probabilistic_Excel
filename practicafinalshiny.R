@@ -40,7 +40,10 @@ ui <- fluidPage(
                                "Log-normal" = "log_normal",
                                "Binomial" = "binomial",
                                "Gamma" = "gamma",
-                               "X²" = "chisq"),
+                               "X²" = "chisq",
+                               "Student's T" = "st",
+                               "Cauchy" = "cauchy",
+                               "Generalized Pareto" = "gp"),
                              selected = "normal"),
                  
                  uiOutput("params"),
@@ -222,8 +225,35 @@ server <- function(input, output) {
                      label = "Standard Deviation",
                      value = 1))
     
+    else if (input$dist == "st")
+      tagList(
+        numericInput("degrees",
+                     label = "Degress of freedom",
+                     value = 1),
+        numericInput("ncp",
+                     label = "Non-centrality Parameter",
+                     value = 0))
     
+    else if (input$dist == "cauchy")
+      tagList(
+        numericInput("loc",
+                           label = "Location",
+                           value = 0),
+        numericInput("scale",
+                           label = "Scale",
+                           value = 1))
     
+    else if (input$dist == "gp")
+      tagList(
+        numericInput("loc",
+                           label = "Location",
+                           value = 0),
+        numericInput("scale",
+                           label = "Scale",
+                           value = 1),
+        numericInput("shape",
+                     label = "Shape",
+                     value=0))
     
   })
   
@@ -363,6 +393,37 @@ server <- function(input, output) {
           req(degrees, ncp)
           
           almacen[[nombre]] <- rchisq(100000, degrees, ncp)
+          
+        } else if (distribucion =="st"){
+          
+          degrees <- isolate(input$degrees)
+          ncp <- isolate(input$ncp)
+          
+          nombre <- isolate(input$name)
+          req(degrees, ncp)
+          
+          almacen[[nombre]] <- rt(100000, degrees, ncp)
+          
+        } else if (distribucion =="cauchy"){
+          
+          loc <- isolate(input$loc)
+          scale <- isolate(input$scale)
+          
+          nombre <- isolate(input$name)
+          req(loc,scale)
+          
+          almacen[[nombre]] <- rcauchy(100000,loc,scale)
+          
+        } else if (distribucion =="gp"){
+          
+          loc <- isolate(input$loc)
+          scale <- isolate(input$scale)
+          shape <- isolate(input$shape)
+          
+          nombre <- isolate(input$name)
+          req(loc,scale,shape)
+          
+          almacen[[nombre]] <- DescTools::rGenPareto(100000,loc,scale,shape)
           
           
           
