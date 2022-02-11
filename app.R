@@ -29,7 +29,7 @@ css <- HTML(" body {
 ui <- fluidPage(
   tags$head(tags$style(css)),
   theme = shinythemes::shinytheme("cerulean"),
-  titlePanel(title=div(img(src="www/Captura.png"))),
+  titlePanel(title=div(img(src="Captura.png"))),
   tabsetPanel(
     tabPanel(icon("home"),
              fluidRow(
