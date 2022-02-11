@@ -1,10 +1,7 @@
-library(ggplot2)
 library(randomcoloR)
 library(tidyverse)
 library(truncnorm)
-library(dplyr)
 library(shiny)
-library(shinythemes)
 library(ggthemes)
 
 css <- HTML(" body {
@@ -34,9 +31,30 @@ ui <- fluidPage(
   theme = shinythemes::shinytheme("cerulean"),
   titlePanel(title=div(img(src="Captura.png"))),
   tabsetPanel(
-    tabPanel("About this project"),
+    tabPanel(icon("home"),
+             fluidRow(
+                      column(
+                        
+                        br(),
+                        p("Probabilistic Spreadsheet is a web application to generate and perform calculations with 
+                        uncertain quantities based on probability distributions. It uses Monte Carlo sampling to generate its results. 
+                        Inspired by Caladis.",
+                          style="text-align:justify;color:black;background-color:#76a5c2;padding:15px;border-radius:10px;font-size:large"),
+                        br(),
+                        h2(strong("How it works"),style="text-align:justify;color:black"),
+                        p(strong("1."),"Open every tab from left to right waiting in each of them for the demo to load. 
+                          (make sure that the demo is properly loaded)",
+                          style="text-align:justify;color:black;background-color:#76a5c2;padding:15px;border-radius:10px"),
+                        p(strong("2."),'Go back to the "Add new variable" tab, now you can add any distribution that you wish.',
+                          strong("Be careful: change the name each time or the app will crash!"),
+                          style="text-align:justify;color:black;background-color:#76a5c2;padding:15px;border-radius:10px"),
+                        p(strong("3."),'Go to the "Calculator" tab and perform any calculations with your newly created distributions.',strong("Be careful: Change the name or leave it empty."),style="text-align:justify;color:black;background-color:#76a5c2;padding:15px;border-radius:10px"),
+                        p(strong("4."),'Congrats! you have made your first calculation now you can go to the "Summaries" and "Probabilities" tabs to find out more about your newly created distributions and calculations.',style="text-align:justify;color:black;background-color:#76a5c2;padding:15px;border-radius:10px"),
+                        
+                        width=8)
+                      )
+             ),
     tabPanel("Add new variable",
-             
              sidebarLayout(
                sidebarPanel(id="sidebar",
                  textInput("name", "Name:",value = "Example_Normal"),
@@ -84,10 +102,16 @@ ui <- fluidPage(
     ),
     
     tabPanel("Summaries",
+             fluidRow(
+               column(8, h3("Distribution's Summaries", align="center"),
+                      fluidRow(
+                        column(5, h4("Calculations", align="center")),
+                        column(7, h4("Variables", align="center"))
+                      ))),
              mainPanel(style = "overflow-y:scroll; max-height: 2000px; position:relative;",
                        splitLayout(uiOutput("summarycalc"),
                                    uiOutput("summaryvar"))
-                       )),
+             )),
     
     tabPanel("Probabilities",
              sidebarPanel(id="sidebar",
@@ -304,7 +328,7 @@ server <- function(input, output) {
     
     calcplot_output_list <- lapply(0:(input$addexpr), function(i) {
       calcplotname <- paste("calcplot", i, sep="")
-      plotOutput(calcplotname, height = 500, width = 1000)
+      plotOutput(calcplotname, height = 500, width = 1700)
       
     })
     
